@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospitality SOP & Concept Engine</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font & Lucide Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar for clean professional aesthetic */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Welcome Modal for First-Time Users -->
+    <div id="welcomeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 transition-opacity duration-300">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+            <div class="absolute top-4 right-4">
+                <button onclick="dismissWelcomeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 bg-amber-500/10 dark:bg-amber-400/10 text-amber-600 dark:text-amber-400 rounded-xl">
+                    <i data-lucide="utensils-crossed" class="w-7 h-7"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold tracking-tight">Hospitality SOP & Concept Engine</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Turn-key Cafe & Restaurant Operations Platform</p>
+                </div>
+            </div>
+
+            <p class="text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+                Welcome to your operational infrastructure workspace. This tool transforms raw site notes, equipment spec sheets, and supplier details into professional hospitality SOPs, compliance checklists, and supply chain audits.
+            </p>
+
+            <div class="space-y-3 mb-6 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800/80">
+                <h4 class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Main Features & Workflow</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <div class="flex items-start gap-2.5">
+                        <i data-lucide="tag" class="w-4 h-4 text-amber-500 mt-0.5 shrink-0"></i>
+                        <span class="text-slate-700 dark:text-slate-300 text-xs">Multi-category tagging (FOH, Kitchen, Safety, etc.)</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-500 mt-0.5 shrink-0"></i>
+                        <span class="text-slate-700 dark:text-slate-300 text-xs">Structured SOP formatting & checklists</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <i data-lucide="sliders" class="w-4 h-4 text-amber-500 mt-0.5 shrink-0"></i>
+                        <span class="text-slate-700 dark:text-slate-300 text-xs">Real-time editing & block reordering</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <i data-lucide="download" class="w-4 h-4 text-amber-500 mt-0.5 shrink-0"></i>
+                        <span class="text-slate-700 dark:text-slate-300 text-xs">Instant Markdown & text export</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100 dark:border-slate-800 pt-4 flex items-center justify-between">
+                <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <i data-lucide="compass" class="w-4 h-4 text-amber-500"></i>
+                    <span><strong>Where to start:</strong> Enter notes in the input dashboard below.</span>
+                </div>
+                <button onclick="dismissWelcomeModal()" class="bg-amber-600 hover:bg-amber-500 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-amber-600/20">
+                    Got it, let's start
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 text-sm font-medium">
+        <i id="toastIcon" data-lucide="check-circle" class="w-5 h-5 text-emerald-400 dark:text-emerald-600"></i>
+        <span id="toastMessage">Action completed successfully</span>
+    </div>
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-amber-500 text-white rounded-xl shadow-md shadow-amber-500/20">
+                    <i data-lucide="utensils-crossed" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base tracking-tight flex items-center gap-2">
+                        Hospitality SOP Engine
+                        <span class="text-[10px] uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full font-semibold border border-amber-500/20">Pro</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Turn-key Concept & Operational Infrastructure</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="openWelcomeModal()" class="text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Guide</span>
+                </button>
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Theme">
+                    <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+                <button onclick="clearAllData()" class="text-xs font-medium text-rose-600 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/40 px-3 py-2 rounded-xl transition-colors border border-rose-200 dark:border-rose-900/50 flex items-center gap-1.5">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    <span>Reset Workspace</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Layout -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left Column: Input Management & Structuring Controls (Col 5) -->
+        <section class="lg:col-span-5 space-y-6">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-semibold text-sm flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4 text-amber-500"></i>
+                        <span>Input Management</span>
+                    </h2>
+                    <span id="charCount" class="text-xs text-slate-400">0 characters</span>
+                </div>
+
+                <!-- Category Tagging Selector -->
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Operational Domain</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" onclick="setCategory('Equipment')" class="cat-btn px-3 py-2 rounded-xl text-xs font-medium border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:border-amber-500 transition-all flex items-center justify-center gap-1.5" data-category="Equipment">
+                            <i data-lucide="cpu" class="w-3.5 h-3.5 text-amber-500"></i> Equipment
+                        </button>
+                        <button type="button" onclick="setCategory('Supply Chain')" class="cat-btn px-3 py-2 rounded-xl text-xs font-medium border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:border-amber-500 transition-all flex items-center justify-center gap-1.5" data-category="Supply Chain">
+                            <i data-lucide="truck" class="w-3.5 h-3.5 text-amber-500"></i> Supply Chain
+                        </button>
+                        <button type="button" onclick="setCategory('Front-of-House')" class="cat-btn px-3 py-2 rounded-xl text-xs font-medium border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:border-amber-500 transition-all flex items-center justify-center gap-1.5" data-category="Front-of-House">
+                            <i data-lucide="users" class="w-3.5 h-3.5 text-amber-500"></i> FOH
+                        </button>
+                        <button type="button" onclick="setCategory('Kitchen')" class="cat-btn px-3 py-2 rounded-xl text-xs font-medium border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:border-amber-500 transition-all flex items-center justify-center gap-1.5" data-category="Kitchen">
+                            <i data-lucide="chef-hat" class="w-3.5 h-3.5 text-amber-500"></i> Kitchen
+                        </button>
+                        <button type="button" onclick="setCategory('Safety')" class="cat-btn px-3 py-2 rounded-xl text-xs font-medium border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:border-amber-500 transition-all flex items-center justify-center gap-1.5 col-span-2" data-category="Safety">
+                            <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-500"></i> Safety & HACCP
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Raw Input Textarea -->
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Source Notes & Details</label>
+                    <textarea id="rawInput" oninput="updateCharCount()" rows="8" placeholder="Paste rough site notes, equipment specs, vendor details, or operational steps here..." class="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all resize-y"></textarea>
+                </div>
+
+                <!-- Structuring Engine Trigger -->
+                <button onclick="generateSOP()" id="generateBtn" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-medium py-3 px-4 rounded-xl text-sm transition-all shadow-lg shadow-amber-600/20 flex items-center justify-center gap-2 group">
+                    <i data-lucide="wand-2" class="w-4 h-4 group-hover:rotate-12 transition-transform"></i>
+                    <span>Run Structuring Engine</span>
+                </button>
+            </div>
+
+            <!-- Quick Template Prompts -->
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+                <h3 class="font-semibold text-xs uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                    <i data-lucide="bookmark" class="w-3.5 h-3.5 text-amber-500"></i>
+                    <span>Sample Scenario Prompts</span>
+                </h3>
+                <div class="space-y-2">
+                    <button onclick="loadSample('espresso')" class="w-full text-left text-xs p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-amber-500/50 bg-slate-50 dark:bg-slate-800/40 hover:bg-amber-500/5 transition-all flex items-center justify-between group">
+                        <span class="font-medium text-slate-700 dark:text-slate-300">Espresso Machine Calibration & Daily Opening</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition-colors"></i>
+                    </button>
+                    <button onclick="loadSample('inventory')" class="w-full text-left text-xs p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-amber-500/50 bg-slate-50 dark:bg-slate-800/40 hover:bg-amber-500/5 transition-all flex items-center justify-between group">
+                        <span class="font-medium text-slate-700 dark:text-slate-300">Supplier Cold-Chain Audit & Receiving Protocol</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition-colors"></i>
+                    </button>
+                    <button onclick="loadSample('safety')" class="w-full text-left text-xs p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-amber-500/50 bg-slate-50 dark:bg-slate-800/40 hover:bg-amber-500/5 transition-all flex items-center justify-between group">
+                        <span class="font-medium text-slate-700 dark:text-slate-300">Kitchen Hazard Analysis & Critical Control Point (HACCP)</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition-colors"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Export & Management Dashboard (Col 7) -->
+        <section class="lg:col-span-7 space-y-6">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm min-h-[600px] flex flex-col">
+                
+                <!-- Dashboard Header & Export Toolbar -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-3">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="font-semibold text-sm">Deliverable Output Dashboard</h2>
+                            <span id="activeCategoryBadge" class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">No Category</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-0.5">Structured hospitality deliverable preview & editor</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="exportMarkdown()" class="text-xs font-medium px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5" title="Copy Markdown">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>Copy Markdown</span>
+                        </button>
+                        <button onclick="exportTextFile()" class="text-xs font-medium px-3 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:opacity-90 transition-opacity flex items-center gap-1.5" title="Download Deliverable">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                            <span>Export File</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Deliverable Content Container -->
+                <div id="outputContainer" class="flex-1 py-6 space-y-6">
+                    <!-- Empty State -->
+                    <div id="emptyState" class="h-full flex flex-col items-center justify-center text-center py-16 px-4">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-500/10 dark:bg-amber-400/10 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-4">
+                            <i data-lucide="file-spreadsheet" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-semibold text-base mb-1">No Deliverable Generated Yet</h3>
+                        <p class="text-xs text-slate-400 max-w-sm mb-6 leading-relaxed">
+                            Select an operational domain tag, enter your rough notes or click a sample scenario prompt, and run the Structuring Engine.
+                        </p>
+                        <button onclick="loadSample('espresso')" class="text-xs font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 px-4 py-2 rounded-xl hover:bg-amber-500/20 transition-colors">
+                            Load Sample Espresso SOP
+                        </button>
+                    </div>
+
+                    <!-- Populated SOP View (Hidden by default) -->
+                    <div id="sopContent" class="hidden space-y-6">
+                        <!-- SOP Title & Metadata -->
+                        <div class="space-y-2">
+                            <input type="text" id="sopTitleInput" class="w-full font-bold text-lg sm:text-xl bg-transparent border-b border-transparent hover:border-slate-200 dark:hover:border-slate-800 focus:border-amber-500 focus:outline-none transition-colors py-1" value="Operational Standard Operating Procedure">
+                            <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400">
+                                <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Version 1.0</span>
+                                <span>•</span>
+                                <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Verified Compliance Template</span>
+                            </div>
+                        </div>
+
+                        <!-- Objective Section -->
+                        <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                                    <i data-lucide="target" class="w-4 h-4"></i> Objective
+                                </h4>
+                            </div>
+                            <textarea id="sopObjective" rows="2" class="w-full bg-transparent text-sm text-slate-700 dark:text-slate-300 focus:outline-none resize-none">Define standardized criteria, equipment parameters, and quality benchmarks for daily operations.</textarea>
+                        </div>
+
+                        <!-- Step-by-Step Procedure -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                                    <i data-lucide="list-ordered" class="w-4 h-4 text-amber-500"></i> Step-by-Step Procedure
+                                </h4>
+                                <button onclick="addStep()" class="text-xs text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1">
+                                    <i data-lucide="plus" class="w-3 h-3"></i> Add Step
+                                </button>
+                            </div>
+                            <div id="stepsList" class="space-y-2">
+                                <!-- Steps dynamically injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Quality Control & Compliance Checkpoints -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-slate-50/50 dark:bg-slate-800/30">
+                                <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+                                    <i data-lucide="check-square" class="w-4 h-4 text-emerald-500"></i> Quality Control
+                                </h4>
+                                <textarea id="sopQC" rows="3" class="w-full bg-transparent text-xs text-slate-700 dark:text-slate-300 focus:outline-none resize-none">Verify visual clarity, temperature stability, and structural integrity before service release.</textarea>
+                            </div>
+                            <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-slate-50/50 dark:bg-slate-800/30">
+                                <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+                                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i> Compliance Checkpoints
+                                </h4>
+                                <textarea id="sopCompliance" rows="3" class="w-full bg-transparent text-xs text-slate-700 dark:text-slate-300 focus:outline-none resize-none">Adhere strictly to local health safety codes, HACCP temperature thresholds, and OSHA standards.</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-400">
+        <p>Hospitality SOP & Concept Engine • Built for Independent Concept Architects & Operators</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let currentCategory = 'Equipment';
+        let stepsData = [];
+
+        // Initialize Lucide icons
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            setCategory('Equipment');
+        });
+
+        // Welcome Modal Handlers
+        function dismissWelcomeModal() {
+            const modal = document.getElementById('welcomeModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        function openWelcomeModal() {
+            const modal = document.getElementById('welcomeModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.remove('opacity-0', 'pointer-events-none'), 10);
+        }
+
+        // Theme Toggle
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('themeIcon');
+            icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            lucide.createIcons();
+            showToast(isDark ? 'Dark mode enabled' : 'Light mode enabled', 'sun');
+        }
+
+        // Category Selector
+        function setCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if(btn.dataset.category === cat) {
+                    btn.classList.add('border-amber-500', 'bg-amber-500/10', 'text-amber-600', 'dark:text-amber-400');
+                } else {
+                    btn.classList.remove('border-amber-500', 'bg-amber-500/10', 'text-amber-600', 'dark:text-amber-400');
+                }
+            });
+            document.getElementById('activeCategoryBadge').innerText = cat;
+        }
+
+        // Character Counter
+        function updateCharCount() {
+            const text = document.getElementById('rawInput').value;
+            document.getElementById('charCount').innerText = `${text.length} characters`;
+        }
+
+        // Sample Scenarios
+        const samples = {
+            espresso: {
+                title: "Espresso Machine Calibration & Daily Opening",
+                category: "Equipment",
+                objective: "Ensure optimal extraction pressure, temperature stability, and grind profile prior to guest service.",
+                steps: [
+                    "Power on espresso machine and verify boiler pressure reaches 1.2 bar and group head temperatures sit at 93°C.",
+                    "Flush group heads for 5 seconds to purge residual coffee oils and stale water.",
+                    "Grind 18g of specialty coffee into portafilter, distribute evenly, and tamp level with 30 lbs of pressure.",
+                    "Pull test shot aiming for 36g out in 28-32 seconds; adjust burrs if extraction is too fast or choked."
+                ],
+                qc: "Crema must be golden-brown with tiger-stripe patterning; taste profile must match origin tasting notes without sourness or bitterness.",
+                compliance: "Sanitize portafilters and steam wands immediately after use in accordance with health board sanitation codes."
+            },
+            inventory: {
+                title: "Supplier Cold-Chain Audit & Receiving Protocol",
+                category: "Supply Chain",
+                objective: "Verify cold-chain integrity and product quality upon delivery before accepting goods into inventory.",
+                steps: [
+                    "Inspect delivery truck internal temperature thermometer before offloading (must be below 4°C for chilled goods, -18°C for frozen).",
+                    "Randomly probe perishable items with a sanitized infrared or digital probe thermometer.",
+                    "Check invoice against physical count and inspect vacuum seals and packaging for signs of compromise.",
+                    "Transfer all items immediately into respective walk-in refrigerators and freezers following FIFO (First-In, First-Out) standards."
+                ],
+                qc: "Reject any delivery exceeding temperature thresholds or displaying packaging defects immediately on the bill of lading.",
+                compliance: "Log all delivery temperatures and vendor lot numbers into the daily HACCP receiving binder."
+            },
+            safety: {
+                title: "Kitchen Hazard Analysis & Critical Control Point (HACCP)",
+                category: "Safety",
+                objective: "Monitor temperature danger zones and prevent biological or chemical contamination in food prep areas.",
+                steps: [
+                    "Record walk-in refrigerator and prep cooler temperatures every 4 hours on the digital HACCP log.",
+                    "Ensure all cooked hot-holding foods maintain internal temperatures above 63°C (145°F).",
+                    "Sanitize all cutting boards and prep surfaces between switching proteins and produce using quaternary sanitizer solution.",
+                    "Store raw meats on bottom shelves below ready-to-eat produce and dairy items to prevent cross-contamination."
+                ],
+                qc: "Conduct rapid ATP swab tests weekly on high-touch surfaces to verify sanitization effectiveness.",
+                compliance: "Immediate escalation to Executive Chef and incident logging if any temperature excursion exceeds 2 hours in the danger zone."
+            }
+        };
+
+        function loadSample(type) {
+            const data = samples[type];
+            if(!data) return;
+            setCategory(data.category);
+            document.getElementById('rawInput').value = data.steps.join('\n');
+            updateCharCount();
+            
+            // Populate output
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('sopContent').classList.remove('hidden');
+            
+            document.getElementById('sopTitleInput').value = data.title;
+            document.getElementById('sopObjective').value = data.objective;
+            document.getElementById('sopQC').value = data.qc;
+            document.getElementById('sopCompliance').value = data.compliance;
+            
+            stepsData = [...data.steps];
+            renderSteps();
+            
+            showToast(`Loaded "${data.title}" sample`, 'bookmark');
+        }
+
+        // Structuring Engine (Simulated AI processing)
+        function generateSOP() {
+            const rawText = document.getElementById('rawInput').value.trim();
+            if(!rawText) {
+                showToast('Please enter source notes or select a sample prompt first.', 'alert-circle');
+                return;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Structuring SOP...</span>`;
+            lucide.createIcons();
+
+            setTimeout(() => {
+                btn.innerHTML = `<i data-lucide="wand-2" class="w-4 h-4"></i><span>Run Structuring Engine</span>`;
+                lucide.createIcons();
+
+                // Parse raw text into structured steps
+                const lines = rawText.split('\n').filter(l => l.trim().length > 0);
+                stepsData = lines.length > 0 ? lines : [
+                    "Initiate setup according to concept blueprint parameters.",
+                    "Execute core operational sequence with attention to quality benchmarks.",
+                    "Perform final inspection and sign off on quality control checklist."
+                ];
+
+                document.getElementById('emptyState').classList.add('hidden');
+                document.getElementById('sopContent').classList.remove('hidden');
+                
+                document.getElementById('sopTitleInput').value = `${currentCategory} Standard Operating Procedure`;
+                document.getElementById('sopObjective').value = `Establish rigorous procedural clarity and quality benchmarks for ${currentCategory.toLowerCase()} operations.`;
+                document.getElementById('sopQC').value = `Ensure zero deviation from brand standards and continuous monitoring during service hours.`;
+                document.getElementById('sopCompliance').value = `Maintain compliance with local regulatory codes, safety standards, and operational guidelines.`;
+
+                renderSteps();
+                showToast('Structuring engine completed successfully!', 'sparkles');
+            }, 600);
+        }
+
+        function renderSteps() {
+            const container = document.getElementById('stepsList');
+            container.innerHTML = '';
+            stepsData.forEach((step, index) => {
+                const div = document.createElement('div');
+                div.className = "flex items-start gap-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3";
+                div.innerHTML = `
+                    <span class="flex items-center justify-center w-6 h-6 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold text-xs shrink-0 mt-0.5">${index + 1}</span>
+                    <textarea rows="2" oninput="updateStepText(${index}, this.value)" class="w-full bg-transparent text-xs text-slate-700 dark:text-slate-300 focus:outline-none resize-none">${step}</textarea>
+                    <button onclick="removeStep(${index})" class="text-slate-400 hover:text-rose-500 p-1 transition-colors" title="Remove Step">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function updateStepText(index, val) {
+            stepsData[index] = val;
+        }
+
+        function addStep() {
+            stepsData.push("New operational step requirement...");
+            renderSteps();
+        }
+
+        function removeStep(index) {
+            stepsData.splice(index, 1);
+            renderSteps();
+        }
+
+        // Export Functions
+        function getMarkdownOutput() {
+            const title = document.getElementById('sopTitleInput').value;
+            const obj = document.getElementById('sopObjective').value;
+            const qc = document.getElementById('sopQC').value;
+            const compliance = document.getElementById('sopCompliance').value;
+
+            let md = `# ${title}\n\n`;
+            md += `**Domain:** ${currentCategory} | **Version:** 1.0\n\n`;
+            md += `## Objective\n${obj}\n\n`;
+            md += `## Step-by-Step Procedure\n`;
+            stepsData.forEach((s, i) => {
+                md += `${i + 1}. ${s}\n`;
+            });
+            md += `\n## Quality Control\n${qc}\n\n`;
+            md += `## Compliance Checkpoints\n${compliance}\n`;
+            return md;
+        }
+
+        function exportMarkdown() {
+            if(stepsData.length === 0) {
+                showToast('No deliverable available to export.', 'alert-circle');
+                return;
+            }
+            const md = getMarkdownOutput();
+            // Use document.execCommand fallback or navigator clipboard
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(md).then(() => {
+                    showToast('Markdown copied to clipboard!', 'copy');
+                }).catch(() => fallbackCopy(md));
+            } else {
+                fallbackCopy(md);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Markdown copied to clipboard!', 'copy');
+            } catch (err) {
+                showToast('Failed to copy to clipboard', 'alert-circle');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function exportTextFile() {
+            if(stepsData.length === 0) {
+                showToast('No deliverable available to export.', 'alert-circle');
+                return;
+            }
+            const md = getMarkdownOutput();
+            const blob = new Blob([md], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${document.getElementById('sopTitleInput').value.toLowerCase().replace(/[^a-z0-9]/g, '_')}.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Deliverable file downloaded successfully!', 'download');
+        }
+
+        function clearAllData() {
+            document.getElementById('rawInput').value = '';
+            updateCharCount();
+            document.getElementById('sopContent').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            stepsData = [];
+            showToast('Workspace reset successfully', 'rotate-ccw');
+        }
+
+        // Toast Notification Helper
+        function showToast(message, iconName = 'check-circle') {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMessage');
+            const iconEl = document.getElementById('toastIcon');
+
+            msgEl.innerText = message;
+            iconEl.setAttribute('data-lucide', iconName);
+            lucide.createIcons();
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
